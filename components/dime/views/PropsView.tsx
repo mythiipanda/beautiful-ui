@@ -61,7 +61,7 @@ export default function PropsView() {
               key={m}
               type="button"
               onClick={() => setMarket(m)}
-              className={`touch-manipulation select-none rounded-full px-2.5 py-1 text-[12px] font-medium transition-colors duration-100 ${
+              className={`touch-manipulation select-none rounded-full px-2.5 py-1 text-[12px] font-medium transition-[background-color,color,transform] duration-150 active:scale-[0.96] ${
                 market === m ? "bg-hover-2 text-ink" : "text-ink-3 hover:bg-hover hover:text-ink-2"
               }`}
             >

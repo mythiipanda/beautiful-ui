@@ -33,7 +33,7 @@ export default function AwardsView() {
             type="button"
             onClick={() => setTab(t.key)}
             aria-pressed={tab === t.key}
-            className={`h-7 shrink-0 select-none rounded-[7px] px-2.5 text-[12.5px] font-medium transition-colors duration-100 ${
+            className={`h-7 shrink-0 select-none rounded-[7px] px-2.5 text-[12.5px] font-medium transition-[background-color,color,transform] duration-150 active:scale-[0.96] ${
               tab === t.key ? "bg-hover text-ink" : "text-ink-3 hover:text-ink-2"
             }`}
           >
@@ -46,7 +46,7 @@ export default function AwardsView() {
         <div
           key={active.key}
           className="divide-y divide-line overflow-hidden rounded-card bg-surface shadow-hairline"
-          style={{ animation: "fade-up 280ms cubic-bezier(0.23,1,0.32,1) both" }}
+          style={{ animation: "fade-up 180ms cubic-bezier(0.23,1,0.32,1) both" }}
         >
           {active.candidates.map((c, i) => (
             <div key={c.player} className="px-4 py-3">

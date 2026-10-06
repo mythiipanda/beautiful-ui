@@ -18,6 +18,7 @@ import AwardsView from "@/components/dime/views/AwardsView";
 import PropsView from "@/components/dime/views/PropsView";
 import SavedView from "@/components/dime/views/SavedView";
 import WarehouseView from "@/components/dime/views/WarehouseView";
+import RoadmapView from "@/components/dime/views/RoadmapView";
 import {
   answerText,
   compareRows,
@@ -144,8 +145,8 @@ function DimeComposer({
           aria-label="Send"
           disabled={!canSend}
           onClick={onSubmit}
-          className="flex size-7 items-center justify-center rounded-[8px]
-            transition-[background-color,color,transform] duration-200 enabled:active:scale-[0.96]"
+           className="flex size-7 items-center justify-center rounded-[8px]
+            transition-[background-color,color,transform] duration-150 enabled:active:scale-[0.96]"
           style={{
             background: canSend ? "var(--ink)" : "var(--line-strong)",
             color: canSend ? "var(--surface)" : "var(--ink-2)",
@@ -171,7 +172,8 @@ type ViewKey =
   | "awards"
   | "props"
   | "saved"
-  | "warehouse";
+  | "warehouse"
+  | "roadmap";
 
 const VIEWS: Record<ViewKey, ComponentType> = {
   tonight: TonightView,
@@ -183,9 +185,10 @@ const VIEWS: Record<ViewKey, ComponentType> = {
   props: PropsView,
   saved: SavedView,
   warehouse: WarehouseView,
+  roadmap: RoadmapView,
 };
 
-const SHELLED_VIEWS: ReadonlySet<ViewKey> = new Set(["props", "saved", "warehouse"]);
+const SHELLED_VIEWS: ReadonlySet<ViewKey> = new Set(["props", "saved", "warehouse", "roadmap"]);
 const FLEX_VIEWS: ReadonlySet<ViewKey> = new Set(["lineups", "trades", "awards"]);
 
 function renderView(key: ViewKey) {
@@ -234,7 +237,9 @@ export default function DimeHarness() {
 
   useEffect(() => {
     const el = scrollRef.current;
-    if (el) el.scrollTo({ top: el.scrollHeight, behavior: "smooth" });
+    if (!el) return;
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    el.scrollTo({ top: el.scrollHeight, behavior: reduce ? "auto" : "smooth" });
   }, [messages]);
 
   const pickFollowUp = (f: string) => {
@@ -263,7 +268,7 @@ export default function DimeHarness() {
                   key={t.id}
                   type="button"
                   onClick={() => setActiveTab(t.id)}
-                  className={`flex h-7 shrink-0 items-center gap-2 rounded-[7px] px-2.5 text-[12.5px] font-medium transition-colors duration-100 ${
+                  className={`flex h-7 shrink-0 items-center gap-2 rounded-[7px] px-2.5 text-[12.5px] font-medium transition-[background-color,color,transform] duration-150 active:scale-[0.97] ${
                     activeTab === t.id ? "bg-hover text-ink" : "text-ink-3 hover:bg-hover hover:text-ink-2"
                   }`}
                 >
@@ -274,7 +279,7 @@ export default function DimeHarness() {
                 type="button"
                 aria-label="New tab"
                 onClick={addTab}
-                className="flex size-7 shrink-0 items-center justify-center rounded-[7px] text-ink-3 transition-colors duration-100 hover:bg-hover hover:text-ink"
+                className="flex size-7 shrink-0 items-center justify-center rounded-[7px] text-ink-3 transition-[background-color,color,transform] duration-150 hover:bg-hover hover:text-ink active:scale-[0.94]"
               >
                 <Ico d={<path d="M12 5v14M5 12h14" />} size={14} />
               </button>
@@ -326,7 +331,7 @@ export default function DimeHarness() {
                       key={f}
                       type="button"
                       onClick={() => pickFollowUp(f)}
-                      className="rounded-full bg-surface px-3 py-1.5 text-left text-[12px] text-ink shadow-btn transition-colors duration-100 hover:bg-hover"
+                      className="rounded-full bg-surface px-3 py-1.5 text-left text-[12px] text-ink shadow-btn transition-[background-color,transform] duration-150 hover:bg-hover active:scale-[0.97]"
                     >
                       {f}
                     </button>

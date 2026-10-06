@@ -10,7 +10,7 @@ function Ico({ d, size = 14 }: { d: React.ReactNode; size?: number }) {
 }
 
 const iconBtn =
-  "flex size-7 items-center justify-center rounded-[6px] text-ink-3 transition-colors duration-100 hover:bg-hover hover:text-ink";
+  "flex size-7 items-center justify-center rounded-[6px] text-ink-3 transition-[background-color,color,transform] duration-150 hover:bg-hover hover:text-ink active:scale-[0.94]";
 
 export default function ArtifactShell({
   title,
@@ -77,7 +77,11 @@ export default function ArtifactShell({
           </button>
         </div>
       </div>
-      <div className={tall ? "" : "max-h-[420px] overflow-y-auto"}>{children}</div>
+      <div
+        key={String(tall)}
+        className={tall ? "" : "max-h-[420px] overflow-y-auto"}
+        style={{ animation: "fade-up 160ms cubic-bezier(0.23,1,0.32,1) both" }}
+      >{children}</div>
     </div>
   );
 }

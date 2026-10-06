@@ -72,21 +72,26 @@ function GameCard({ game }: { game: TonightGame }) {
           </svg>
         </div>
       </button>
-      {open && (
-        <div className="mt-3 border-t border-line pt-3" style={{ animation: "fade-up 200ms cubic-bezier(0.23,1,0.32,1) both" }}>
-          <WinProb game={game} />
-          <div className="mt-3 space-y-2">
-            <div className="flex flex-wrap items-center justify-between gap-y-1">
-              <span className="text-[12px] text-ink-3">{game.away} last 10</span>
-              <FormChips form={game.awayForm} />
-            </div>
-            <div className="flex flex-wrap items-center justify-between gap-y-1">
-              <span className="text-[12px] text-ink-3">{game.home} last 10</span>
-              <FormChips form={game.homeForm} />
+      <div
+        className={`grid transition-[grid-template-rows] duration-220 ease-out ${open ? "grid-rows-[1fr]" : "grid-rows-[0fr]"}`}
+        style={{ transitionTimingFunction: "cubic-bezier(0.23,1,0.32,1)" }}
+      >
+        <div className="overflow-hidden">
+          <div className="mt-3 border-t border-line pt-3">
+            <WinProb game={game} />
+            <div className="mt-3 space-y-2">
+              <div className="flex flex-wrap items-center justify-between gap-y-1">
+                <span className="text-[12px] text-ink-3">{game.away} last 10</span>
+                <FormChips form={game.awayForm} />
+              </div>
+              <div className="flex flex-wrap items-center justify-between gap-y-1">
+                <span className="text-[12px] text-ink-3">{game.home} last 10</span>
+                <FormChips form={game.homeForm} />
+              </div>
             </div>
           </div>
         </div>
-      )}
+      </div>
     </div>
   );
 }

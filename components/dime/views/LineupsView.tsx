@@ -104,7 +104,7 @@ export default function LineupsView() {
             key={t}
             type="button"
             onClick={() => { setTeam(t); setExpanded(null); }}
-            className={`h-7 shrink-0 select-none rounded-[7px] px-3 text-[12px] font-medium transition-colors duration-100 ${
+            className={`h-7 shrink-0 select-none rounded-[7px] px-3 text-[12px] font-medium transition-[background-color,color,transform] duration-150 active:scale-[0.96] ${
               team === t
                 ? "bg-ink text-[var(--surface)]"
                 : "bg-surface text-ink-2 shadow-btn hover:bg-hover hover:text-ink"
@@ -164,7 +164,9 @@ export default function LineupsView() {
                   open && (
                     <tr key={`${l.id}-x`} className="border-b border-line bg-page">
                       <td colSpan={COLS.length} className="px-4 py-3.5">
-                        <ShotDist l={l} />
+                        <div style={{ animation: "fade-up 180ms cubic-bezier(0.23,1,0.32,1) both" }}>
+                          <ShotDist l={l} />
+                        </div>
                       </td>
                     </tr>
                   ),

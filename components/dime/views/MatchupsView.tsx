@@ -53,7 +53,7 @@ function MatchupDetail({ m }: { m: Matchup }) {
     <div
       key={m.id}
       className="rounded-[10px] bg-surface p-4 shadow-hairline sm:p-5"
-      style={{ animation: "fade-up 250ms cubic-bezier(0.23,1,0.32,1) both" }}
+      style={{ animation: "fade-up 200ms cubic-bezier(0.23,1,0.32,1) both" }}
     >
       <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
         <div className="text-[14px] font-medium text-ink">
@@ -122,7 +122,7 @@ export default function MatchupsView() {
               type="button"
               onClick={() => setActiveId(m.id)}
               aria-pressed={selected}
-              className={`select-none rounded-[10px] p-3 text-left shadow-hairline transition-colors duration-100 ${
+              className={`select-none rounded-[10px] p-3 text-left shadow-hairline transition-[background-color,transform] duration-150 active:scale-[0.98] ${
                 selected ? "bg-hover-2" : "bg-surface hover:bg-hover"
               }`}
             >

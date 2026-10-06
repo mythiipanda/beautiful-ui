@@ -11,6 +11,7 @@ import { IconChevronDownSmall } from "@central-icons-react/round-outlined-radius
 import { IconCompassRound } from "@central-icons-react/round-outlined-radius-2-stroke-2/IconCompassRound";
 import { IconCrossSmall } from "@central-icons-react/round-outlined-radius-2-stroke-2/IconCrossSmall";
 import { IconEditBig } from "@central-icons-react/round-outlined-radius-2-stroke-2/IconEditBig";
+import { IconFlag1 } from "@central-icons-react/round-outlined-radius-2-stroke-2/IconFlag1";
 import { IconMagnifyingGlass } from "@central-icons-react/round-outlined-radius-2-stroke-2/IconMagnifyingGlass";
 import { IconSidebarLeftArrow } from "@central-icons-react/round-outlined-radius-2-stroke-2/IconSidebarLeftArrow";
 import { IconTarget } from "@central-icons-react/round-outlined-radius-2-stroke-2/IconTarget";
@@ -93,6 +94,7 @@ const NAV_GROUPS: { key: string; label: string; icon: ReactNode }[][] = [
   [
     { key: "saved", label: "Saved", icon: <IconBookmark size={18} /> },
     { key: "warehouse", label: "Warehouse", icon: <IconArchive size={18} /> },
+    { key: "roadmap", label: "Roadmap", icon: <IconFlag1 size={18} /> },
   ],
 ];
 

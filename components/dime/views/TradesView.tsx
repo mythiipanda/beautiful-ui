@@ -43,7 +43,7 @@ function TeamSection({
                 type="button"
                 onClick={() => { setAbbr(t.abbr); setPicked([]); }}
                 aria-pressed={t.abbr === abbr}
-                className={`h-7 rounded-[7px] px-2 font-mono text-[11px] transition-colors duration-100 ${
+                className={`h-7 rounded-[7px] px-2 font-mono text-[11px] transition-[background-color,color,transform] duration-150 active:scale-[0.96] ${
                   t.abbr === abbr ? "bg-hover font-medium text-ink" : "text-ink-3 hover:text-ink-2"
                 }`}
               >

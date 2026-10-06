@@ -106,7 +106,7 @@ export default function SavedView() {
                         e.stopPropagation();
                         remove(t.id);
                       }}
-                      className="mt-0.5 flex size-7 shrink-0 touch-manipulation select-none items-center justify-center rounded-[8px] text-ink-3 opacity-0 transition-all duration-100 hover:bg-hover hover:text-ink focus-visible:opacity-100 group-hover:opacity-100 [@media(hover:none)]:opacity-100"
+                      className="mt-0.5 flex size-7 shrink-0 touch-manipulation select-none items-center justify-center rounded-[8px] text-ink-3 opacity-0 transition-[opacity,background-color,color,transform] duration-150 hover:bg-hover hover:text-ink active:scale-[0.94] focus-visible:opacity-100 group-hover:opacity-100 [@media(hover:none)]:opacity-100"
                     >
                       <svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke="currentColor"
                         strokeWidth={2} strokeLinecap="round" aria-hidden>
