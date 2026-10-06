@@ -52,7 +52,7 @@ export default function ArtifactTable<T extends (string | number)[]>({
 
   return (
     <table className="w-full text-[13px]">
-      <thead>
+      <thead className="sticky top-0 z-10 bg-surface">
         <tr className="border-b border-line">
           {columns.map((c, i) => (
             <th key={c.key} className={`p-0 text-[13px] font-medium ${i === 0 ? "pl-4" : ""} ${i === columns.length - 1 ? "pr-4" : ""}`}>

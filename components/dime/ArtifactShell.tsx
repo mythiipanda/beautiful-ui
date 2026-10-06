@@ -79,7 +79,7 @@ export default function ArtifactShell({
       </div>
       <div
         key={String(tall)}
-        className={tall ? "" : "max-h-[420px] overflow-y-auto"}
+        className={tall ? "overscroll-contain" : "max-h-[420px] overflow-y-auto overscroll-contain"}
         style={{ animation: "fade-up 160ms cubic-bezier(0.23,1,0.32,1) both" }}
       >{children}</div>
     </div>

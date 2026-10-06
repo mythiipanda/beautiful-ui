@@ -18,7 +18,6 @@ import AwardsView from "@/components/dime/views/AwardsView";
 import PropsView from "@/components/dime/views/PropsView";
 import SavedView from "@/components/dime/views/SavedView";
 import WarehouseView from "@/components/dime/views/WarehouseView";
-import RoadmapView from "@/components/dime/views/RoadmapView";
 import {
   answerText,
   compareRows,
@@ -172,8 +171,7 @@ type ViewKey =
   | "awards"
   | "props"
   | "saved"
-  | "warehouse"
-  | "roadmap";
+  | "warehouse";
 
 const VIEWS: Record<ViewKey, ComponentType> = {
   tonight: TonightView,
@@ -185,10 +183,9 @@ const VIEWS: Record<ViewKey, ComponentType> = {
   props: PropsView,
   saved: SavedView,
   warehouse: WarehouseView,
-  roadmap: RoadmapView,
 };
 
-const SHELLED_VIEWS: ReadonlySet<ViewKey> = new Set(["props", "saved", "warehouse", "roadmap"]);
+const SHELLED_VIEWS: ReadonlySet<ViewKey> = new Set(["props", "saved", "warehouse"]);
 const FLEX_VIEWS: ReadonlySet<ViewKey> = new Set(["lineups", "trades", "awards"]);
 
 function renderView(key: ViewKey) {
@@ -248,7 +245,7 @@ export default function DimeHarness() {
   };
 
   return (
-    <main className="flex h-[100dvh] gap-0 bg-canvas p-2.5 text-ink lg:pl-0">
+    <main className="flex h-[100dvh] gap-0 overscroll-none bg-canvas p-2.5 text-ink lg:pl-0">
       <DimeSidebar
         activeNav={activeView}
         onNavChange={(key: string) => setActiveView(key as "chat" | ViewKey)}

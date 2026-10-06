@@ -13,11 +13,11 @@
 }
 
 .scope:hover ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.14);
+  background: rgba(41, 41, 41, 0.18);
 }
 
 .scope ::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.22);
+  background: rgba(41, 41, 41, 0.3);
 }
 
 .scope,
@@ -27,5 +27,5 @@
 }
 
 .scope *:hover {
-  scrollbar-color: rgba(255, 255, 255, 0.14) transparent;
+  scrollbar-color: rgba(41, 41, 41, 0.18) transparent;
 }
