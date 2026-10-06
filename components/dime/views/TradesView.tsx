@@ -34,7 +34,7 @@ function TeamSection({
   return (
     <section aria-label={`${team.name} roster`}>
       <div className="flex items-center justify-between px-1">
-        <div className="flex items-center gap-0.5" role="group" aria-label="Pick a team">
+        <div className="flex flex-wrap items-center gap-0.5" role="group" aria-label="Pick a team">
           {tradeTeams
             .filter((t) => t.abbr !== otherAbbr)
             .map((t) => (
@@ -129,6 +129,13 @@ export default function TradesView() {
             <div className="flex flex-col gap-1.5 px-1">
               <span className="font-mono text-[12px] tabular-nums text-ink-2">{line(aAbbr, aOut, bOut)}</span>
               <span className="font-mono text-[12px] tabular-nums text-ink-2">{line(bAbbr, bOut, aOut)}</span>
+              <button
+                type="button"
+                onClick={() => { setAPicked([]); setBPicked([]); }}
+                className="mt-1 h-7 w-fit shrink-0 select-none rounded-[7px] px-3 text-[12px] font-medium text-ink-3 transition-[background-color,color,transform] duration-150 hover:bg-hover hover:text-ink active:scale-[0.96]"
+              >
+                Clear picks
+              </button>
             </div>
           )}
 

@@ -37,7 +37,7 @@ export default function ExploreView() {
     <div className="mx-auto w-full max-w-[900px] px-4 py-6 sm:px-8">
       <div className="flex items-baseline justify-between">
         <h1 className="text-[15px] font-semibold text-ink">Explore</h1>
-        <span className="text-[12px] text-ink-3 tabular-nums">{rows.length} players</span>
+        <span className="text-[12px] text-ink-3 tabular-nums">{rows.length} {rows.length === 1 ? "player" : "players"}</span>
       </div>
       <div className="mt-4 flex gap-2">
         <input

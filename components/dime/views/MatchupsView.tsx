@@ -51,7 +51,6 @@ function MatchupBars({ rows, aName, bName }: { rows: MatchupStat[]; aName: strin
 function MatchupDetail({ m }: { m: Matchup }) {
   return (
     <div
-      key={m.id}
       className="rounded-[10px] bg-surface p-4 shadow-hairline sm:p-5"
       style={{ animation: "fade-up 200ms cubic-bezier(0.23,1,0.32,1) both" }}
     >
@@ -111,7 +110,7 @@ export default function MatchupsView() {
     <div className="mx-auto w-full max-w-[760px] px-4 py-6 sm:px-8">
       <div className="flex items-baseline justify-between">
         <h1 className="text-[15px] font-semibold text-ink">Matchups</h1>
-        <span className="text-[12px] text-ink-3">{matchups.length} games</span>
+        <span className="text-[12px] tabular-nums text-ink-3">{matchups.length} {matchups.length === 1 ? "game" : "games"}</span>
       </div>
       <div className="mt-4 grid grid-cols-2 gap-2">
         {matchups.map((m) => {
@@ -137,7 +136,7 @@ export default function MatchupsView() {
         })}
       </div>
       <div className="mt-3">
-        <MatchupDetail m={active} />
+        <MatchupDetail key={active.id} m={active} />
       </div>
     </div>
   );

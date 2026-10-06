@@ -101,7 +101,7 @@ export default function TonightView() {
     <div className="mx-auto w-full max-w-[760px] px-4 py-6 sm:px-8">
       <div className="flex items-baseline justify-between">
         <h1 className="text-[15px] font-semibold text-ink">Tonight</h1>
-        <span className="text-[12px] text-ink-3">{tonightLabel} · {tonightGames.length} games</span>
+        <span className="text-[12px] tabular-nums text-ink-3">{tonightLabel} · {tonightGames.length} {tonightGames.length === 1 ? "game" : "games"}</span>
       </div>
       <div className="mt-4 grid grid-cols-1 gap-2.5 sm:grid-cols-2">
         {tonightGames.length > 0 ? (

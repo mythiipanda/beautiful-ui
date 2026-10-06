@@ -52,7 +52,7 @@ export default function AwardsView() {
             <div key={c.player} className="px-4 py-3">
               <div className="flex items-center gap-3">
                 <span className="w-5 shrink-0 font-mono text-[12px] tabular-nums text-ink-3">{i + 1}</span>
-                <span className="min-w-0 flex-1 truncate text-[13px] font-medium text-ink">
+                <span className="min-w-0 flex-1 truncate text-[13px] font-medium text-ink" title={`${c.player} · ${c.team}`}>
                   {c.player}
                   <span className="ml-2 font-mono text-[11px] font-normal text-ink-3">{c.team}</span>
                 </span>

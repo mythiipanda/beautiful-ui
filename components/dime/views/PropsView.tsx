@@ -122,7 +122,7 @@ export default function PropsView() {
           </table>
         </div>
         <p className="px-4 py-3 font-mono text-[11px] text-ink-3">
-          {rows.length} props · hit rate over last 10 games · edge where the model disagrees with the line
+          {rows.length} {rows.length === 1 ? "prop" : "props"} · hit rate over last 10 games · edge where the model disagrees with the line
         </p>
       </div>
     </section>
