@@ -143,8 +143,16 @@ export default function LineupsView() {
                 return [
                   <tr
                     key={l.id}
+                    tabIndex={0}
+                    aria-expanded={open}
                     onClick={() => setExpanded(open ? null : l.id)}
-                    className="h-[35px] cursor-pointer transition-colors duration-100 hover:bg-hover"
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault();
+                        setExpanded(open ? null : l.id);
+                      }
+                    }}
+                    className="h-[35px] cursor-pointer transition-colors duration-100 hover:bg-hover focus-visible:outline-none focus-visible:bg-hover"
                   >
                     <td className="max-w-[300px] pl-4">
                       <div className="flex min-w-0 items-baseline gap-2">
