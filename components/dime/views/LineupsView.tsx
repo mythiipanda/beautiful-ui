@@ -118,7 +118,7 @@ export default function LineupsView() {
       <div className="mt-3 min-h-0 flex-1 overflow-y-auto px-4 pb-8">
         <div className="overflow-x-auto rounded-card bg-surface shadow-hairline">
           <table className="w-full min-w-[620px] text-[13px]">
-            <thead>
+            <thead className="sticky top-0 z-10 bg-surface">
               <tr className="border-b border-line">
                 {COLS.map((c, i) => (
                   <th key={c.key} className={`p-0 text-[13px] font-medium ${i === 0 ? "pl-4" : ""} ${i === COLS.length - 1 ? "pr-4" : ""}`}>

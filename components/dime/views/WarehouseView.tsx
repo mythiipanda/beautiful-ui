@@ -55,7 +55,7 @@ export default function WarehouseView() {
       </div>
 
       <div className="flex min-h-0 flex-1 flex-col sm:flex-row">
-        <div className="w-full shrink-0 overflow-y-auto border-b border-line sm:w-64 sm:border-b-0 sm:border-r">
+        <div className="max-h-[38dvh] w-full shrink-0 overflow-y-auto overscroll-contain border-b border-line sm:max-h-none sm:w-64 sm:border-b-0 sm:border-r">
           {tables.length === 0 ? (
             <p className="px-4 py-6 text-[13px] text-ink-3">No tables match “{query.trim()}”.</p>
           ) : (
