@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type ComponentType } from "react";
 import ThinkingState from "@/components/primitives/ThinkingState";
 import ToolChips, { type ToolStep } from "@/components/primitives/ToolChips";
 import ArtifactShell from "@/components/dime/ArtifactShell";
@@ -9,6 +9,15 @@ import ArtifactChart from "@/components/dime/ArtifactChart";
 import ArtifactShotChart from "@/components/dime/ArtifactShotChart";
 import ArtifactTable, { type ArtifactColumn } from "@/components/dime/ArtifactTable";
 import DimeSidebar from "@/components/site/DimeSidebar";
+import TonightView from "@/components/dime/views/TonightView";
+import ExploreView from "@/components/dime/views/ExploreView";
+import MatchupsView from "@/components/dime/views/MatchupsView";
+import LineupsView from "@/components/dime/views/LineupsView";
+import TradesView from "@/components/dime/views/TradesView";
+import AwardsView from "@/components/dime/views/AwardsView";
+import PropsView from "@/components/dime/views/PropsView";
+import SavedView from "@/components/dime/views/SavedView";
+import WarehouseView from "@/components/dime/views/WarehouseView";
 import {
   answerText,
   compareRows,
@@ -153,9 +162,58 @@ function DimeComposer({
 
 type Tab = { id: string; label: string };
 
+type ViewKey =
+  | "tonight"
+  | "explore"
+  | "matchups"
+  | "lineups"
+  | "trades"
+  | "awards"
+  | "props"
+  | "saved"
+  | "warehouse";
+
+const VIEWS: Record<ViewKey, ComponentType> = {
+  tonight: TonightView,
+  explore: ExploreView,
+  matchups: MatchupsView,
+  lineups: LineupsView,
+  trades: TradesView,
+  awards: AwardsView,
+  props: PropsView,
+  saved: SavedView,
+  warehouse: WarehouseView,
+};
+
+const SHELLED_VIEWS: ReadonlySet<ViewKey> = new Set(["props", "saved", "warehouse"]);
+const FLEX_VIEWS: ReadonlySet<ViewKey> = new Set(["lineups", "trades", "awards"]);
+
+function renderView(key: ViewKey) {
+  const View = VIEWS[key];
+  if (SHELLED_VIEWS.has(key)) return <View key={key} />;
+  if (FLEX_VIEWS.has(key))
+    return (
+      <div
+        key={key}
+        className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden rounded-[14px] border border-line bg-page"
+      >
+        <View />
+      </div>
+    );
+  return (
+    <div
+      key={key}
+      className="min-h-0 min-w-0 flex-1 overflow-y-auto rounded-[14px] border border-line bg-page"
+    >
+      <View />
+    </div>
+  );
+}
+
 export default function DimeHarness() {
   const [tabs, setTabs] = useState<Tab[]>([{ id: "t1", label: "SGA vs Luka — Oct 6" }]);
   const [activeTab, setActiveTab] = useState("t1");
+  const [activeView, setActiveView] = useState<"chat" | ViewKey>("chat");
   const [messages, setMessages] = useState<string[]>([]);
   const [draft, setDraft] = useState("");
   const inputRef = useRef<HTMLTextAreaElement | null>(null);
@@ -186,10 +244,18 @@ export default function DimeHarness() {
 
   return (
     <main className="flex h-[100dvh] gap-0 bg-canvas p-2.5 text-ink lg:pl-0">
-      <DimeSidebar onNewAnalysis={addTab} />
+      <DimeSidebar
+        activeNav={activeView}
+        onNavChange={(key: string) => setActiveView(key as "chat" | ViewKey)}
+        onNewAnalysis={() => {
+          setActiveView("chat");
+          addTab();
+        }}
+      />
 
       <div className="flex min-w-0 flex-1 flex-col gap-2.5">
         <div className="flex min-h-0 flex-1 gap-2.5">
+          {activeView === "chat" ? (
           <section className="flex min-w-0 flex-1 flex-col overflow-hidden rounded-[14px] border border-line bg-page">
             <div className="flex h-11 shrink-0 items-center gap-1 overflow-x-auto border-b border-line px-2">
               {tabs.map((t) => (
@@ -299,6 +365,9 @@ export default function DimeHarness() {
               </div>
             </div>
           </section>
+          ) : (
+            renderView(activeView)
+          )}
         </div>
       </div>
     </main>

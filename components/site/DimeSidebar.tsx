@@ -106,13 +106,16 @@ const RECENTS = [
 
 export default function DimeSidebar({
   className = "",
+  activeNav,
+  onNavChange,
   onNewAnalysis,
 }: {
   className?: string;
+  activeNav: string;
+  onNavChange: (key: string) => void;
   onNewAnalysis?: () => void;
 }) {
   const [collapsed, setCollapsed] = useState(false);
-  const [activeNav, setActiveNav] = useState("chat");
   const [activeTitle, setActiveTitle] = useState<string | null>("SGA vs Luka — Oct 6");
   const [searchOpen, setSearchOpen] = useState(false);
   const [query, setQuery] = useState("");
@@ -194,7 +197,7 @@ export default function DimeSidebar({
             icon={<IconEditBig size={18} />}
             label="New analysis"
             onClick={() => {
-              setActiveNav("chat");
+              onNavChange("chat");
               setActiveTitle(null);
               onNewAnalysis?.();
             }}
@@ -210,7 +213,7 @@ export default function DimeSidebar({
                   icon={item.icon}
                   label={item.label}
                   active={activeNav === item.key}
-                  onClick={() => setActiveNav(item.key)}
+                  onClick={() => onNavChange(item.key)}
                 />
               ))}
             </GlideGroup>
@@ -285,7 +288,7 @@ export default function DimeSidebar({
                 label={item.label}
                 active={item.label === activeTitle}
                 onClick={() => {
-                  setActiveNav("chat");
+                  onNavChange("chat");
                   setActiveTitle(item.label);
                 }}
               />
