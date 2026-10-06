@@ -8,4 +8,11 @@ const nextConfig: NextConfig = {
   images: { unoptimized: true },
 };
 
+/* GitHub Pages (PAGES_EXPORT=1): static export under the /beautiful-ui
+ * base path. The /api routes are removed before the build in CI. */
+if (process.env.PAGES_EXPORT === "1") {
+  nextConfig.output = "export";
+  nextConfig.basePath = "/beautiful-ui";
+}
+
 export default nextConfig;
