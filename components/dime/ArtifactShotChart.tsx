@@ -39,29 +39,43 @@ export default function ArtifactShotChart({ zones }: { zones: ShotZone[] }) {
         <Court />
         {zones.map((z, i) => {
           const r = 5 + (z.att / maxAtt) * 9;
-          const opacity = 0.3 + (z.pct / 100) * 0.6;
+          const opacity = 0.4 + (z.pct / 100) * 0.55;
+          const cx = px(z.x);
+          const cy = py(z.y);
           return (
             <g key={i}>
               <circle
-                cx={px(z.x)} cy={py(z.y)} r={r}
+                cx={cx} cy={cy} r={r}
                 fill="var(--ink)" opacity={opacity}
                 stroke="var(--page)" strokeWidth={2}
               />
-              {z.att >= 80 && (
-                <text
-                  x={px(z.x)} y={py(z.y)} textAnchor="middle" dy="0.35em"
-                  fontSize={10} fontFamily="var(--font-mono)" fill="var(--page)"
-                >
-                  {z.pct}
-                </text>
-              )}
+              <text
+                x={cx} y={cy + r + 11} textAnchor="middle"
+                fontSize={9} fontFamily="var(--font-mono)" fill="var(--ink-2)"
+              >
+                {z.pct}
+              </text>
             </g>
           );
         })}
       </svg>
-      <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 font-mono text-[11px] text-ink-3">
-        <span>size = attempts · brightness = fg%</span>
-        <span className="tabular-nums">rim 71% · mid-range 45–54% · above break 36–41%</span>
+      <div className="mt-2 flex items-center gap-6 font-mono text-[11px] text-ink-3">
+        <span className="flex items-center gap-2">
+          <span className="flex items-end gap-1.5" aria-hidden>
+            <span className="rounded-full bg-ink" style={{ width: 7, height: 7 }} />
+            <span className="rounded-full bg-ink" style={{ width: 11, height: 11 }} />
+            <span className="rounded-full bg-ink" style={{ width: 15, height: 15 }} />
+          </span>
+          shots
+        </span>
+        <span className="flex items-center gap-2">
+          <span className="flex items-center gap-1.5" aria-hidden>
+            <span className="rounded-full bg-ink" style={{ width: 11, height: 11, opacity: 0.4 }} />
+            <span className="rounded-full bg-ink" style={{ width: 11, height: 11, opacity: 0.68 }} />
+            <span className="rounded-full bg-ink" style={{ width: 11, height: 11, opacity: 0.95 }} />
+          </span>
+          fg%
+        </span>
       </div>
     </div>
   );

@@ -104,7 +104,13 @@ const RECENTS = [
   { id: "tonight-slate", label: "Tonight's slate" },
 ];
 
-export default function DimeSidebar({ className = "" }: { className?: string }) {
+export default function DimeSidebar({
+  className = "",
+  onNewAnalysis,
+}: {
+  className?: string;
+  onNewAnalysis?: () => void;
+}) {
   const [collapsed, setCollapsed] = useState(false);
   const [activeNav, setActiveNav] = useState("chat");
   const [activeTitle, setActiveTitle] = useState<string | null>("SGA vs Luka — Oct 6");
@@ -117,6 +123,18 @@ export default function DimeSidebar({ className = "" }: { className?: string }) 
   useEffect(() => {
     if (searchOpen) searchRef.current?.focus();
   }, [searchOpen]);
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
+        e.preventDefault();
+        setCollapsed(false);
+        setSearchOpen(true);
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
 
   const collapse = () => {
     setCollapsed(true);
@@ -178,6 +196,7 @@ export default function DimeSidebar({ className = "" }: { className?: string }) 
             onClick={() => {
               setActiveNav("chat");
               setActiveTitle(null);
+              onNewAnalysis?.();
             }}
           />
         </GlideGroup>
@@ -278,15 +297,12 @@ export default function DimeSidebar({ className = "" }: { className?: string }) 
         </div>
 
         <div className="sidebar-copy mx-2 mt-3 w-[208px] border-t border-line pt-3">
-          <button
-            type="button"
-            className="flex h-8 w-full items-center gap-2 rounded-control bg-hover-2 px-2 text-[12.5px] font-medium text-ink transition-[background-color,transform] duration-150 active:scale-[0.98]"
-          >
+          <div className="flex h-8 w-full items-center gap-2 px-2 text-[12.5px] font-medium text-ink">
             <span className="flex size-5 shrink-0 items-center justify-center rounded-full bg-line-strong text-[10px] font-semibold text-ink-2">
               T
             </span>
             <span className="min-w-0 flex-1 truncate text-left">Tony</span>
-          </button>
+          </div>
         </div>
       </div>
     </aside>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import ThinkingState from "@/components/primitives/ThinkingState";
 import ToolChips, { type ToolStep } from "@/components/primitives/ToolChips";
 import ArtifactShell from "@/components/dime/ArtifactShell";
@@ -100,13 +100,30 @@ function TonightStrip() {
   );
 }
 
-function DimeComposer() {
-  const [draft, setDraft] = useState("");
+function DimeComposer({
+  draft,
+  setDraft,
+  onSubmit,
+  inputRef,
+}: {
+  draft: string;
+  setDraft: (v: string) => void;
+  onSubmit: () => void;
+  inputRef: React.RefObject<HTMLTextAreaElement | null>;
+}) {
+  const canSend = draft.trim().length > 0;
   return (
     <div className="rounded-control border border-line bg-field p-2.5 shadow-[0_1px_2px_rgba(0,0,0,0.035)] transition-[border-color,box-shadow] duration-150 focus-within:border-line-strong">
       <textarea
+        ref={inputRef}
         value={draft}
         onChange={(e) => setDraft(e.target.value)}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" && !e.shiftKey) {
+            e.preventDefault();
+            onSubmit();
+          }
+        }}
         placeholder="Ask about any team, player, lineup, or market…"
         rows={1}
         className="w-full resize-none bg-transparent px-1 pt-0.5 text-[13.5px] leading-[1.5] text-ink placeholder:text-ink-3 focus:outline-none"
@@ -115,11 +132,13 @@ function DimeComposer() {
         <button
           type="button"
           aria-label="Send"
+          disabled={!canSend}
+          onClick={onSubmit}
           className="flex size-7 items-center justify-center rounded-[8px]
             transition-[background-color,color,transform] duration-200 enabled:active:scale-[0.96]"
           style={{
-            background: "var(--ink)",
-            color: "var(--surface)",
+            background: canSend ? "var(--ink)" : "var(--line-strong)",
+            color: canSend ? "var(--surface)" : "var(--ink-2)",
           }}
         >
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
@@ -131,28 +150,70 @@ function DimeComposer() {
   );
 }
 
+type Tab = { id: string; label: string };
+
 export default function DimeHarness() {
+  const [tabs, setTabs] = useState<Tab[]>([{ id: "t1", label: "SGA vs Luka — Oct 6" }]);
+  const [activeTab, setActiveTab] = useState("t1");
+  const [messages, setMessages] = useState<string[]>([]);
+  const [draft, setDraft] = useState("");
+  const inputRef = useRef<HTMLTextAreaElement | null>(null);
+  const scrollRef = useRef<HTMLDivElement | null>(null);
+
+  const addTab = () => {
+    const id = `t${Date.now()}`;
+    setTabs((t) => [...t, { id, label: "New analysis" }]);
+    setActiveTab(id);
+  };
+
+  const submit = () => {
+    const q = draft.trim();
+    if (!q) return;
+    setMessages((m) => [...m, q]);
+    setDraft("");
+  };
+
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (el) el.scrollTo({ top: el.scrollHeight, behavior: "smooth" });
+  }, [messages]);
+
+  const pickFollowUp = (f: string) => {
+    setDraft(f);
+    inputRef.current?.focus();
+  };
+
   return (
     <main className="flex h-[100dvh] gap-0 bg-canvas p-2.5 text-ink lg:pl-0">
-      <DimeSidebar />
+      <DimeSidebar onNewAnalysis={addTab} />
 
       <div className="flex min-w-0 flex-1 flex-col gap-2.5">
         <div className="flex min-h-0 flex-1 gap-2.5">
           <section className="flex min-w-0 flex-1 flex-col overflow-hidden rounded-[14px] border border-line bg-page">
             <div className="flex h-11 shrink-0 items-center gap-1 overflow-x-auto border-b border-line px-2">
-              <div className="flex h-7 shrink-0 items-center gap-2 rounded-[7px] bg-hover px-2.5 text-[12.5px] font-medium text-ink">
-                SGA vs Luka — Oct 6
-              </div>
+              {tabs.map((t) => (
+                <button
+                  key={t.id}
+                  type="button"
+                  onClick={() => setActiveTab(t.id)}
+                  className={`flex h-7 shrink-0 items-center gap-2 rounded-[7px] px-2.5 text-[12.5px] font-medium transition-colors duration-100 ${
+                    activeTab === t.id ? "bg-hover text-ink" : "text-ink-3 hover:bg-hover hover:text-ink-2"
+                  }`}
+                >
+                  {t.label}
+                </button>
+              ))}
               <button
                 type="button"
                 aria-label="New tab"
+                onClick={addTab}
                 className="flex size-7 shrink-0 items-center justify-center rounded-[7px] text-ink-3 transition-colors duration-100 hover:bg-hover hover:text-ink"
               >
                 <Ico d={<path d="M12 5v14M5 12h14" />} size={14} />
               </button>
             </div>
 
-            <div className="min-h-0 flex-1 overflow-y-auto">
+            <div ref={scrollRef} className="min-h-0 flex-1 overflow-y-auto">
               <div className="mx-auto w-full max-w-[760px] px-4 py-8 sm:px-8">
                 <div className="flex justify-end pl-10 sm:pl-24" style={{ animation: "fade-up 300ms cubic-bezier(0.23,1,0.32,1) both" }}>
                   <div className="rounded-xl bg-field px-3.5 py-2 text-[13px] leading-relaxed text-ink shadow-hairline">
@@ -197,6 +258,7 @@ export default function DimeHarness() {
                     <button
                       key={f}
                       type="button"
+                      onClick={() => pickFollowUp(f)}
                       className="rounded-full bg-surface px-3 py-1.5 text-left text-[12px] text-ink shadow-btn transition-colors duration-100 hover:bg-hover"
                     >
                       {f}
@@ -215,13 +277,24 @@ export default function DimeHarness() {
                     <TonightStrip />
                   </ArtifactShell>
                 </div>
+                {messages.map((m, i) => (
+                  <div
+                    key={i}
+                    className="mt-4 flex justify-end pl-10 sm:pl-24"
+                    style={{ animation: "fade-up 300ms cubic-bezier(0.23,1,0.32,1) both" }}
+                  >
+                    <div className="rounded-xl bg-field px-3.5 py-2 text-[13px] leading-relaxed text-ink shadow-hairline">
+                      {m}
+                    </div>
+                  </div>
+                ))}
                 <div className="h-6" />
               </div>
             </div>
 
             <div className="shrink-0 px-4 pb-2.5">
               <div className="mx-auto max-w-[760px]">
-                <DimeComposer />
+                <DimeComposer draft={draft} setDraft={setDraft} onSubmit={submit} inputRef={inputRef} />
               </div>
             </div>
 
@@ -230,7 +303,7 @@ export default function DimeHarness() {
                 <span className="size-1.5 rounded-full bg-green" />
                 warehouse live · 330,485 rows · last query 412ms
               </span>
-              <span>Dime 1 · ⌘K commands</span>
+              <span>Dime 1 · ⌘K search</span>
             </div>
           </section>
         </div>

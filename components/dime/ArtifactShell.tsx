@@ -29,13 +29,25 @@ export default function ArtifactShell({
   const [copied, setCopied] = useState(false);
 
   const copy = async () => {
+    const text = copyText ?? title;
     try {
-      await navigator.clipboard.writeText(copyText ?? title);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 1200);
+      await navigator.clipboard.writeText(text);
     } catch {
-      /* clipboard unavailable — leave the button inert */
+      try {
+        const ta = document.createElement("textarea");
+        ta.value = text;
+        ta.style.position = "fixed";
+        ta.style.opacity = "0";
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand("copy");
+        document.body.removeChild(ta);
+      } catch {
+        return;
+      }
     }
+    setCopied(true);
+    setTimeout(() => setCopied(false), 1200);
   };
 
   return (
