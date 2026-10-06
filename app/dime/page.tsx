@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import DimeHarness from "@/components/site/DimeHarness";
+import styles from "./scrollbars.module.css";
 
 export const metadata: Metadata = {
   title: "Dime — NBA analytics harness",
@@ -8,5 +9,9 @@ export const metadata: Metadata = {
 };
 
 export default function DimePage() {
-  return <DimeHarness />;
+  return (
+    <div className={styles.scope}>
+      <DimeHarness />
+    </div>
+  );
 }

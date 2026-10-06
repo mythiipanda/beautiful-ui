@@ -1,0 +1,31 @@
+.scope ::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.scope ::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.scope ::-webkit-scrollbar-thumb {
+  background: transparent;
+  border-radius: 100px;
+}
+
+.scope:hover ::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.scope ::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.22);
+}
+
+.scope,
+.scope * {
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
+}
+
+.scope *:hover {
+  scrollbar-color: rgba(255, 255, 255, 0.14) transparent;
+}

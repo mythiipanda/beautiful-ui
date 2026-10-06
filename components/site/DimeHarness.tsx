@@ -111,24 +111,20 @@ function DimeComposer() {
         rows={1}
         className="w-full resize-none bg-transparent px-1 pt-0.5 text-[13.5px] leading-[1.5] text-ink placeholder:text-ink-3 focus:outline-none"
       />
-      <div className="flex items-center justify-between px-1 pb-0.5 pt-1.5">
-        <div className="flex items-center gap-2.5">
-          <button
-            type="button"
-            className="flex h-7 items-center gap-1 rounded-chip bg-field px-2 text-[12px] font-medium text-ink-2 shadow-hairline transition-colors duration-100 hover:bg-hover-2 hover:text-ink"
-          >
-            Dime 1
-            <Ico d={<path d="M6 9l6 6 6-6" />} size={12} />
-          </button>
-          <span className="font-mono text-[11px] text-ink-3">warehouse · props · web</span>
-        </div>
+      <div className="flex items-center justify-end px-1 pb-0.5 pt-1.5">
         <button
           type="button"
           aria-label="Send"
-          className="flex size-7 items-center justify-center rounded-[8px] transition-[background-color,color,transform] duration-200 enabled:active:scale-[0.96]"
-          style={{ background: "var(--ink)", color: "var(--surface)" }}
+          className="flex size-7 items-center justify-center rounded-[8px]
+            transition-[background-color,color,transform] duration-200 enabled:active:scale-[0.96]"
+          style={{
+            background: "var(--ink)",
+            color: "var(--surface)",
+          }}
         >
-          <Ico d={<path d="M12 19V5M5 12l7-7 7 7" />} size={16} />
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M12 19V5M5 12l7-7 7 7" />
+          </svg>
         </button>
       </div>
     </div>
@@ -172,7 +168,7 @@ export default function DimeHarness() {
                   <ToolChips
                     steps={TOOL_STEPS}
                     diffs={[]}
-                    labels={{ header: "3 warehouse calls", more: "all shown" }}
+                    labels={{ header: "3 warehouse calls", more: "" }}
                   />
                 </div>
 
