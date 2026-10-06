@@ -53,7 +53,7 @@ export default function ArtifactCompare({
       <div className="flex items-center gap-1.5 py-2.5 text-[11px] text-ink-3">
         <span className="inline-block size-2 rounded-[2px] bg-ink" /> {aName}
         <span className="ml-2 inline-block size-2 rounded-[2px] bg-line-strong" /> {bName}
-        <span className="ml-1">— solid marks the leader</span>
+        <span className="ml-1">solid marks the leader</span>
       </div>
     </div>
   );

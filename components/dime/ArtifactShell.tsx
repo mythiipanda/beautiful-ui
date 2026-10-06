@@ -53,7 +53,7 @@ export default function ArtifactShell({
   return (
     <div
       className="overflow-hidden rounded-card bg-surface shadow-hairline"
-      style={{ animation: "fade-up 450ms cubic-bezier(0.23,1,0.32,1) both", animationDelay: `${delay}ms` }}
+      style={{ animation: "fade-up 280ms cubic-bezier(0.23,1,0.32,1) both", animationDelay: `${delay}ms` }}
     >
       <div className="flex h-10 shrink-0 items-center justify-between border-b border-line pl-4 pr-2">
         <span className="truncate text-[13px] font-semibold text-ink">{title}</span>

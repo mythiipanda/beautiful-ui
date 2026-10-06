@@ -48,7 +48,7 @@ export const compareRows = [
 ];
 
 export const answerText =
-  "On raw scoring it's closer than the narratives suggest. Gilgeous-Alexander is at 31.2 ppg on 64.1% TS over the last 30; Dončić is at 30.4 ppg on 61.8% TS — about one extra efficient possession per game. The separation shows up in team context: OKC is +11.3 per 100 with SGA on versus +2.1 with him off; Dallas is +7.8 / +1.4 with Dončić. Playmaking load favors Dončić: 38.2% assist rate against SGA's 29.4%, on nearly identical usage.";
+  "On raw scoring it's closer than the narratives suggest. Gilgeous-Alexander is at 31.2 ppg on 64.1% TS over the last 30; Dončić is at 30.4 ppg on 61.8% TS, about one extra efficient possession per game. The separation shows up in team context: OKC is +11.3 per 100 with SGA on versus +2.1 with him off; Dallas is +7.8 / +1.4 with Dončić. Playmaking load favors Dončić: 38.2% assist rate against SGA's 29.4%, on nearly identical usage.";
 
 export const followUps = [
   "Who defends better by matchup data?",

@@ -81,19 +81,20 @@ function renderPlayerCell(row: PlayerTuple, col: number) {
 
 function TonightStrip() {
   return (
-    <div className="divide-y divide-line">
+    <div className="grid grid-cols-2 gap-px bg-line sm:grid-cols-3">
       {tonightGames.map((g) => (
-        <div key={g.away + g.home} className="flex h-[35px] items-center gap-3 px-4 text-[12.5px] transition-colors duration-100 hover:bg-hover">
-          <span className="flex w-14 items-center gap-1.5 font-mono tabular-nums text-ink-3">
-            {g.live && <span className="size-1.5 rounded-full bg-red" />}
-            {g.time}
-          </span>
-          <span className="font-medium text-ink">
-            {g.away}<span className="font-normal text-ink-3"> @ </span>{g.home}
-          </span>
-          {g.note && <span className="truncate text-[12px] text-ink-3">{g.note}</span>}
-          <span className="ml-auto font-mono tabular-nums text-ink-2">{g.line}</span>
-          <span className="w-20 text-right font-mono tabular-nums text-ink-3">{g.ou}</span>
+        <div key={g.away + g.home} className="min-w-0 bg-surface px-3.5 py-2.5 transition-colors duration-100 hover:bg-hover">
+          <div className="flex items-center gap-1.5">
+            {g.live && <span className="size-1.5 shrink-0 rounded-full bg-red" />}
+            <span className="truncate text-[13px] font-medium text-ink">
+              {g.away}<span className="font-normal text-ink-3"> @ </span>{g.home}
+            </span>
+            <span className="ml-auto shrink-0 font-mono text-[11px] tabular-nums text-ink-3">{g.time}</span>
+          </div>
+          <div className="mt-1 truncate font-mono text-[11px] tabular-nums text-ink-2">
+            {g.line}<span className="text-ink-3"> · {g.ou}</span>
+          </div>
+          {g.note && <div className="mt-0.5 truncate text-[11px] text-ink-3">{g.note}</div>}
         </div>
       ))}
     </div>
@@ -215,7 +216,7 @@ export default function DimeHarness() {
 
             <div ref={scrollRef} className="min-h-0 flex-1 overflow-y-auto">
               <div className="mx-auto w-full max-w-[760px] px-4 py-8 sm:px-8">
-                <div className="flex justify-end pl-10 sm:pl-24" style={{ animation: "fade-up 300ms cubic-bezier(0.23,1,0.32,1) both" }}>
+                <div className="flex justify-end pl-10 sm:pl-24" style={{ animation: "fade-up 280ms cubic-bezier(0.23,1,0.32,1) both" }}>
                   <div className="rounded-xl bg-field px-3.5 py-2 text-[13px] leading-relaxed text-ink shadow-hairline">
                     Compare SGA and Luka this season — scoring, efficiency, and team impact.
                   </div>
@@ -237,7 +238,7 @@ export default function DimeHarness() {
                   <ArtifactShell title="Scoring & efficiency — last 30 games" source="silver_boxscores" delay={0}>
                     <ArtifactCompare rows={compareRows} aName="SGA" bName="Dončić" />
                   </ArtifactShell>
-                  <ArtifactShell title="Scoring trend — last 15 games" source="silver_boxscores" delay={50}>
+                  <ArtifactShell title="Scoring trend — last 15 games" source="silver_boxscores" delay={40}>
                     <ArtifactChart
                       series={[
                         { name: "Gilgeous-Alexander", tone: "ink", values: sgaTrend },
@@ -246,7 +247,7 @@ export default function DimeHarness() {
                       footnote="points per game · last 15"
                     />
                   </ArtifactShell>
-                  <ArtifactShell title="Shot chart — Gilgeous-Alexander" source="tracking feed" delay={100}>
+                  <ArtifactShell title="Shot chart — Gilgeous-Alexander" source="tracking feed" delay={80}>
                     <ArtifactShotChart zones={sgaZones} />
                   </ArtifactShell>
                 </div>
@@ -267,13 +268,13 @@ export default function DimeHarness() {
                 </div>
 
                 <div className="mt-6">
-                  <ArtifactShell title="League scoring — warehouse pull" source="silver_boxscores · 8 of 330,485 rows" delay={150}>
+                  <ArtifactShell title="League scoring" source="silver_boxscores · 8 of 330,485 rows" delay={120}>
                     <ArtifactTable columns={TABLE_COLS} rows={TABLE_ROWS} renderCell={renderPlayerCell} />
                   </ArtifactShell>
                 </div>
 
                 <div className="mt-4">
-                  <ArtifactShell title="Tonight" source="silver_schedule · 6 games" delay={200}>
+                  <ArtifactShell title="Tonight" source="silver_schedule · 6 games" delay={160}>
                     <TonightStrip />
                   </ArtifactShell>
                 </div>
@@ -281,7 +282,7 @@ export default function DimeHarness() {
                   <div
                     key={i}
                     className="mt-4 flex justify-end pl-10 sm:pl-24"
-                    style={{ animation: "fade-up 300ms cubic-bezier(0.23,1,0.32,1) both" }}
+                    style={{ animation: "fade-up 280ms cubic-bezier(0.23,1,0.32,1) both" }}
                   >
                     <div className="rounded-xl bg-field px-3.5 py-2 text-[13px] leading-relaxed text-ink shadow-hairline">
                       {m}
@@ -292,18 +293,10 @@ export default function DimeHarness() {
               </div>
             </div>
 
-            <div className="shrink-0 px-4 pb-2.5">
+            <div className="shrink-0 px-4 pb-4">
               <div className="mx-auto max-w-[760px]">
                 <DimeComposer draft={draft} setDraft={setDraft} onSubmit={submit} inputRef={inputRef} />
               </div>
-            </div>
-
-            <div className="flex h-[30px] shrink-0 items-center justify-between border-t border-line px-4 font-mono text-[11px] tabular-nums text-ink-3">
-              <span className="flex items-center gap-2">
-                <span className="size-1.5 rounded-full bg-green" />
-                warehouse live · 330,485 rows · last query 412ms
-              </span>
-              <span>Dime 1 · ⌘K search</span>
             </div>
           </section>
         </div>
