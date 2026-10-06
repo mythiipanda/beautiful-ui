@@ -109,17 +109,22 @@ export default function DimeSidebar({
   activeNav,
   onNavChange,
   onNewAnalysis,
+  forceVisible = false,
+  onRequestClose,
 }: {
   className?: string;
   activeNav: string;
   onNavChange: (key: string) => void;
   onNewAnalysis?: () => void;
+  forceVisible?: boolean;
+  onRequestClose?: () => void;
 }) {
   const [collapsed, setCollapsed] = useState(false);
   const [activeTitle, setActiveTitle] = useState<string | null>("SGA vs Luka — Oct 6");
   const [searchOpen, setSearchOpen] = useState(false);
   const [query, setQuery] = useState("");
   const searchRef = useRef<HTMLInputElement>(null);
+  const overlay = onRequestClose !== undefined;
 
   const visibleRecents = RECENTS.filter((item) => item.label.toLowerCase().includes(query.trim().toLowerCase()));
 
@@ -128,16 +133,13 @@ export default function DimeSidebar({
   }, [searchOpen]);
 
   useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
-        e.preventDefault();
-        setCollapsed(false);
-        setSearchOpen(true);
-      }
+    const onCollapse = () => {
+      if (overlay) onRequestClose();
+      else collapse();
     };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, []);
+    window.addEventListener("dime:collapse-sidebar", onCollapse);
+    return () => window.removeEventListener("dime:collapse-sidebar", onCollapse);
+  }, [overlay, onRequestClose]);
 
   const collapse = () => {
     setCollapsed(true);
@@ -149,7 +151,7 @@ export default function DimeSidebar({
     <aside
       data-sidebar-collapsed={collapsed}
       aria-label="Dime navigation"
-      className={`relative flex h-full shrink-0 overflow-hidden transition-[width] max-lg:hidden ${className}`}
+      className={`relative flex h-full shrink-0 overflow-hidden transition-[width] ${forceVisible ? "" : "max-lg:hidden"} ${className}`}
       style={{
         width: collapsed ? SIDEBAR_MOTION.collapsedWidth : SIDEBAR_MOTION.expandedWidth,
         transitionDuration: `${SIDEBAR_MOTION.duration}ms`,
@@ -172,10 +174,13 @@ export default function DimeSidebar({
 
           <button
             type="button"
-            aria-label="Collapse sidebar"
+            aria-label={overlay ? "Close navigation" : "Collapse sidebar"}
             aria-hidden={collapsed}
             tabIndex={collapsed ? -1 : 0}
-            onClick={collapse}
+            onClick={() => {
+              if (overlay) onRequestClose();
+              else collapse();
+            }}
             className="sidebar-collapse-control absolute right-2 top-1 flex size-8 items-center justify-center rounded-[8px] text-ink-3 transition-[opacity,background-color,color] duration-150 hover:bg-hover-2 hover:text-ink"
           >
             <IconSidebarLeftArrow size={18} />

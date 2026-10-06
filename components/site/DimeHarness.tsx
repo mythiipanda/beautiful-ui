@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, type ComponentType } from "react";
+import { useEffect, useMemo, useRef, useState, type ComponentType } from "react";
 import ThinkingState from "@/components/primitives/ThinkingState";
 import ToolChips, { type ToolStep } from "@/components/primitives/ToolChips";
 import ArtifactShell from "@/components/dime/ArtifactShell";
@@ -9,6 +9,8 @@ import ArtifactChart from "@/components/dime/ArtifactChart";
 import ArtifactShotChart from "@/components/dime/ArtifactShotChart";
 import ArtifactTable, { type ArtifactColumn } from "@/components/dime/ArtifactTable";
 import DimeSidebar from "@/components/site/DimeSidebar";
+import DimeCommandPalette, { type PaletteEntry } from "@/components/site/DimeCommandPalette";
+import { mockReply } from "@/lib/dime-mock-reply";
 import TonightView from "@/components/dime/views/TonightView";
 import ExploreView from "@/components/dime/views/ExploreView";
 import MatchupsView from "@/components/dime/views/MatchupsView";
@@ -210,14 +212,29 @@ function renderView(key: ViewKey) {
   );
 }
 
+type ChatMsg = { role: "user" | "assistant"; text: string };
+
+const REPLY_THINK_ROWS = [
+  { primary: "Parsing the question", secondary: "scope and filters" },
+  { primary: "Planning warehouse queries", secondary: "boxscores · last 30" },
+  { primary: "Checking evidence coverage", secondary: "50+ games each" },
+];
+
 export default function DimeHarness() {
   const [tabs, setTabs] = useState<Tab[]>([{ id: "t1", label: "SGA vs Luka — Oct 6" }]);
   const [activeTab, setActiveTab] = useState("t1");
   const [activeView, setActiveView] = useState<"chat" | ViewKey>("chat");
-  const [messages, setMessages] = useState<string[]>([]);
+  const [messages, setMessages] = useState<ChatMsg[]>([]);
+  const [thinking, setThinking] = useState(false);
   const [draft, setDraft] = useState("");
+  const [paletteOpen, setPaletteOpen] = useState(false);
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
+  const [mobileNavShown, setMobileNavShown] = useState(false);
   const inputRef = useRef<HTMLTextAreaElement | null>(null);
   const scrollRef = useRef<HTMLDivElement | null>(null);
+  const menuBtnRef = useRef<HTMLButtonElement | null>(null);
+  const sheetRef = useRef<HTMLDivElement | null>(null);
+  const timers = useRef<number[]>([]);
 
   const addTab = () => {
     const id = `t${Date.now()}`;
@@ -225,23 +242,117 @@ export default function DimeHarness() {
     setActiveTab(id);
   };
 
-  const submit = () => {
-    const q = draft.trim();
+  const submit = (raw?: string) => {
+    const q = (raw ?? draft).trim();
     if (!q) return;
-    setMessages((m) => [...m, q]);
+    setMessages((m) => [...m, { role: "user", text: q }]);
     setDraft("");
+    setThinking(true);
+    const t = window.setTimeout(() => {
+      setMessages((m) => [...m, { role: "assistant", text: mockReply(q) }]);
+      setThinking(false);
+    }, 1600);
+    timers.current.push(t);
   };
+
+  useEffect(() => () => {
+    timers.current.forEach((t) => window.clearTimeout(t));
+  }, []);
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
+        e.preventDefault();
+        setPaletteOpen(true);
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
+
+  const openMobileNav = () => {
+    setMobileNavOpen(true);
+    window.setTimeout(() => setMobileNavShown(true), 0);
+  };
+
+  const closeMobileNav = () => {
+    setMobileNavShown(false);
+    window.setTimeout(() => {
+      setMobileNavOpen(false);
+      menuBtnRef.current?.focus();
+    }, 200);
+  };
+
+  useEffect(() => {
+    if (!mobileNavOpen) return;
+    const t = window.setTimeout(() => {
+      sheetRef.current?.querySelector<HTMLElement>("button")?.focus();
+    }, 60);
+    return () => window.clearTimeout(t);
+  }, [mobileNavOpen]);
+
+  useEffect(() => {
+    if (!mobileNavOpen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        e.preventDefault();
+        closeMobileNav();
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [mobileNavOpen]);
+
+  const paletteEntries: PaletteEntry[] = useMemo(
+    () => [
+      { id: "view-chat", label: "Chat", kind: "view", run: () => setActiveView("chat") },
+      { id: "view-tonight", label: "Tonight", kind: "view", run: () => setActiveView("tonight") },
+      { id: "view-explore", label: "Explore", kind: "view", run: () => setActiveView("explore") },
+      { id: "view-matchups", label: "Matchups", kind: "view", run: () => setActiveView("matchups") },
+      { id: "view-lineups", label: "Lineups", kind: "view", run: () => setActiveView("lineups") },
+      { id: "view-trades", label: "Trades", kind: "view", run: () => setActiveView("trades") },
+      { id: "view-awards", label: "Awards", kind: "view", run: () => setActiveView("awards") },
+      { id: "view-props", label: "Props", kind: "view", run: () => setActiveView("props") },
+      { id: "view-saved", label: "Saved", kind: "view", run: () => setActiveView("saved") },
+      { id: "view-warehouse", label: "Warehouse", kind: "view", run: () => setActiveView("warehouse") },
+      {
+        id: "action-new",
+        label: "New analysis",
+        kind: "action",
+        run: () => {
+          setActiveView("chat");
+          addTab();
+        },
+      },
+      {
+        id: "action-collapse",
+        label: "Collapse sidebar",
+        kind: "action",
+        run: () => window.dispatchEvent(new Event("dime:collapse-sidebar")),
+      },
+      {
+        id: "action-clear",
+        label: "Clear chat input",
+        kind: "action",
+        run: () => {
+          setActiveView("chat");
+          setDraft("");
+          inputRef.current?.focus();
+        },
+      },
+    ],
+    []
+  );
 
   useEffect(() => {
     const el = scrollRef.current;
     if (!el) return;
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     el.scrollTo({ top: el.scrollHeight, behavior: reduce ? "auto" : "smooth" });
-  }, [messages]);
+  }, [messages, thinking]);
 
   const pickFollowUp = (f: string) => {
-    setDraft(f);
-    inputRef.current?.focus();
+    submit(f);
   };
 
   return (
@@ -256,6 +367,34 @@ export default function DimeHarness() {
       />
 
       <div className="flex min-w-0 flex-1 flex-col gap-2.5">
+        <div className="flex h-12 shrink-0 items-center gap-1 rounded-[14px] border border-line bg-page px-1 lg:hidden">
+          <button
+            ref={menuBtnRef}
+            type="button"
+            aria-label="Open navigation"
+            aria-expanded={mobileNavOpen}
+            onClick={openMobileNav}
+            className="flex size-11 shrink-0 touch-manipulation select-none items-center justify-center rounded-[8px] text-ink-2 transition-[background-color,color,transform] duration-150 hover:bg-hover-2 hover:text-ink active:scale-[0.96]"
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden>
+              <path d="M4 7h16M4 12h16M4 17h16" />
+            </svg>
+          </button>
+          <span className="min-w-0 flex-1 truncate px-1 text-[14px] font-medium text-ink">Dime</span>
+          <button
+            type="button"
+            aria-label="New analysis"
+            onClick={() => {
+              setActiveView("chat");
+              addTab();
+            }}
+            className="flex size-11 shrink-0 touch-manipulation select-none items-center justify-center rounded-[8px] text-ink-2 transition-[background-color,color,transform] duration-150 hover:bg-hover-2 hover:text-ink active:scale-[0.96]"
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden>
+              <path d="M12 5v14M5 12h14" />
+            </svg>
+          </button>
+        </div>
         <div className="flex min-h-0 flex-1 gap-2.5">
           {activeView === "chat" ? (
           <section className="flex min-w-0 flex-1 flex-col overflow-hidden rounded-[14px] border border-line bg-page">
@@ -346,24 +485,39 @@ export default function DimeHarness() {
                     <TonightStrip />
                   </ArtifactShell>
                 </div>
-                {messages.map((m, i) => (
-                  <div
-                    key={i}
-                    className="mt-4 flex justify-end pl-10 sm:pl-24"
-                    style={{ animation: "fade-up 280ms cubic-bezier(0.23,1,0.32,1) both" }}
-                  >
-                    <div className="rounded-xl bg-field px-3.5 py-2 text-[13px] leading-relaxed text-ink shadow-hairline">
-                      {m}
+                {messages.map((m, i) =>
+                  m.role === "user" ? (
+                    <div
+                      key={i}
+                      className="mt-4 flex justify-end pl-10 sm:pl-24"
+                      style={{ animation: "fade-up 280ms cubic-bezier(0.23,1,0.32,1) both" }}
+                    >
+                      <div className="rounded-xl bg-field px-3.5 py-2 text-[13px] leading-relaxed text-ink shadow-hairline">
+                        {m.text}
+                      </div>
                     </div>
+                  ) : (
+                    <p
+                      key={i}
+                      className="mt-4 max-w-[620px] text-[13.5px] leading-[1.65] text-ink-2"
+                      style={{ animation: "fade-up 280ms cubic-bezier(0.23,1,0.32,1) both" }}
+                    >
+                      {m.text}
+                    </p>
+                  )
+                )}
+                {thinking && (
+                  <div className="mt-2">
+                    <ThinkingState variant="Steps" rows={REPLY_THINK_ROWS} done="Thought for 2 seconds" />
                   </div>
-                ))}
+                )}
                 <div className="h-6" />
               </div>
             </div>
 
             <div className="shrink-0 px-4 pb-4">
               <div className="mx-auto max-w-[760px]">
-                <DimeComposer draft={draft} setDraft={setDraft} onSubmit={submit} inputRef={inputRef} />
+                <DimeComposer draft={draft} setDraft={setDraft} onSubmit={() => submit()} inputRef={inputRef} />
               </div>
             </div>
           </section>
@@ -372,6 +526,38 @@ export default function DimeHarness() {
           )}
         </div>
       </div>
+      {mobileNavOpen && (
+        <div role="dialog" aria-modal="true" aria-label="Dime navigation" className="fixed inset-0 z-50 lg:hidden">
+          <button
+            type="button"
+            aria-label="Close navigation"
+            onClick={closeMobileNav}
+            className="absolute inset-0 cursor-default bg-black/45 transition-opacity duration-200 ease-out"
+            style={{ opacity: mobileNavShown ? 1 : 0 }}
+          />
+          <div
+            ref={sheetRef}
+            className="absolute left-0 top-0 h-[100dvh] w-[300px] max-w-[85vw] border-r border-line bg-page pt-2 shadow-overlay transition-transform duration-200 ease-out [&_[data-row]]:min-h-[44px] [&_.sidebar-collapse-control]:size-11"
+            style={{ transform: mobileNavShown ? "translateX(0)" : "translateX(-102%)" }}
+          >
+            <DimeSidebar
+              forceVisible
+              activeNav={activeView}
+              onRequestClose={closeMobileNav}
+              onNavChange={(key: string) => {
+                setActiveView(key as "chat" | ViewKey);
+                closeMobileNav();
+              }}
+              onNewAnalysis={() => {
+                setActiveView("chat");
+                addTab();
+                closeMobileNav();
+              }}
+            />
+          </div>
+        </div>
+      )}
+      <DimeCommandPalette open={paletteOpen} entries={paletteEntries} onClose={() => setPaletteOpen(false)} />
     </main>
   );
 }

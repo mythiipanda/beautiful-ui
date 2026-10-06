@@ -96,7 +96,7 @@ export default function WarehouseView() {
 
           <h3 className="mb-1 mt-5 text-[12px] font-medium text-ink-3">Schema</h3>
           <table className="w-full text-[13px]">
-            <thead>
+            <thead className="sticky top-0 z-10 bg-page">
               <tr className="border-b border-line">
                 <th className="h-[32px] text-left text-[13px] font-medium text-ink-2">Column</th>
                 <th className="h-[32px] text-left text-[13px] font-medium text-ink-2">Type</th>
@@ -115,7 +115,7 @@ export default function WarehouseView() {
           <h3 className="mb-1 mt-5 text-[12px] font-medium text-ink-3">Sample rows</h3>
           <div className="overflow-x-auto">
             <table className="w-full text-[13px]">
-              <thead>
+              <thead className="sticky top-0 z-10 bg-page">
                 <tr className="border-b border-line">
                   {table.columns.map((c) => (
                     <th key={c.name} className="h-[32px] whitespace-nowrap pr-4 text-left font-mono text-[12px] font-medium text-ink-2">

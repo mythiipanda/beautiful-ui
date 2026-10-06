@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 import { EmailModal } from "./EmailCapture";
 
 /* ─────────────────────────────────────────────────────────
@@ -15,8 +16,11 @@ const THRESHOLD = 10;
 
 export function EmailNudge() {
   const [open, setOpen] = useState(false);
+  const pathname = usePathname();
+  const onDime = pathname === "/dime" || (pathname?.startsWith("/dime/") ?? false);
 
   useEffect(() => {
+    if (onDime) return;
     try {
       if (localStorage.getItem(DONE_KEY) === "done") return;
     } catch {
@@ -37,7 +41,7 @@ export function EmailNudge() {
 
     document.addEventListener("click", onClick);
     return () => document.removeEventListener("click", onClick);
-  }, []);
+  }, [onDime]);
 
   const close = () => {
     setOpen(false);
@@ -48,5 +52,6 @@ export function EmailNudge() {
     }
   };
 
+  if (onDime) return null;
   return <EmailModal open={open} onClose={close} />;
 }
